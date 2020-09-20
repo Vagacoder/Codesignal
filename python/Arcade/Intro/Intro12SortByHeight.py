@@ -32,7 +32,7 @@
 #%%
 
 # * Solution 1
-def sortByHeight(a):
+def sortByHeight(a:list) -> list:
     n = len(a)
     # ! filter() and map()
     temp = list(filter(lambda x : x >-1, a))
@@ -53,7 +53,7 @@ def sortByHeight(a):
 
 
 # * Solution 2
-def sortByHeight2(a):
+def sortByHeight2(a:list) -> list:
     temp = list(filter(lambda x : x > -1, a))
     temp.sort()
 
