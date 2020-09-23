@@ -1,5 +1,6 @@
 #
 #  * Intro 07. Almost Incereasing Sequence
+#  * Medium
 #  * Given a sequence of integers as an array, determine whether it is possible to obtain a strictly increasing sequence by removing no more than one element from the array.
 
 #  * Note: sequence a0, a1, ..., an is considered to be a strictly increasing if a0 < a1 < ... < an. Sequence containing only one element is also considered to be strictly increasing.
@@ -38,6 +39,7 @@ def almostIncreasingSequence(sequence: list) -> bool:
     for i in range(n-1):
         if(sequence[i] >= sequence[i+1]):
             count += 1
+            # ! check [i-1] vs. [i+1], [i] vs. [i+2]
             if(i-1 >=0 and i+2<=n-1 
                 and sequence[i] >= sequence[i+2]
                 and sequence[i-1] >= sequence[i+1]):

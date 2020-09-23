@@ -27,6 +27,7 @@
 #     true if inputString is a palindrome, false otherwise.
 
 #%%
+# ! reverse string: str[::-1]
 def checkPalindrome1(inputString:str)->bool:
     return inputString == inputString[::-1]
 

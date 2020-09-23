@@ -60,7 +60,7 @@ def sortByHeight2(a:list) -> list:
     # ! use enumerate(), no need use len()
     for i, h in enumerate(a):
         if h == -1:
-            # ! insert into list
+            # ! list.insert(index, element)
             temp.insert(i, -1)
 
     return temp

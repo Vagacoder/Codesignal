@@ -32,6 +32,7 @@
 
 # * Solution 1
 def alternatingSum(a: list) -> list:
+    # ! get odd index elements and even index elements
     w1 = sum(a[::2])
     w2 = sum(a[1::2])
     return [w1, w2]

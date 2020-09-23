@@ -75,7 +75,7 @@ def isLucky3(n: int)-> int:
     firstHalf = strN[:mid]
     secondHalf = strN[mid:]
 
-    # ! map()
+    # ! map(function, iterable)
     firstSum = sum(map(lambda i: int(i), firstHalf))
     secondSum = sum(map(lambda i: int(i), secondHalf))
     return firstSum == secondSum
