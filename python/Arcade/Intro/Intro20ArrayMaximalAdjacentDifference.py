@@ -46,3 +46,5 @@ a1 = [2, 4, 1, 0]
 e1 = 3
 r1 = arrayMaximalAdjacentDifference2(a1)
 print('For {}, expected: {}, result: {}'.format(a1, e1, r1))
+
+# %%
