@@ -93,12 +93,28 @@ def minesweeper2(matrix):
             # ! count all 9 grids, if[i][j] has mine, count+= 1, balanced with last step
             for x in [-1,0,1]:
                 for y in [-1,0,1]:
+                    # ! Chain comparison !!
                     if 0<=i+x<len(matrix) and 0<=j+y<len(matrix[0]):
                         count += matrix[i+x][j+y]
 
             r[i].append(count)
     
     return r
+
+
+# * Solution 3
+def minesweeper3(matrix):
+
+    rows = len(matrix)
+    cols = len(matrix[0])
+    
+    # ! Check single grid
+    conv = lambda i , j : 1 if 0 <= i < rows and 0 <= j < cols and matrix[i][j] else 0
+    
+    # ! Check neighbor 8 grids
+    nbs = lambda i, j : sum(conv(ii, jj) for ii in range(i-1, i+2) for jj in range(j-1, j+2)) - conv(i, j)
+    
+    return [[nbs(i, j) for j in range(cols)]for i in range(rows)]
 
 
 a1 = [[True, False, False],
