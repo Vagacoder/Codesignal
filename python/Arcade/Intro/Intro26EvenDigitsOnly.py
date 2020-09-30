@@ -37,6 +37,7 @@ def evenDigitsOnly1(n:int)-> bool:
 
 # * Solution 2
 def evenDigitsOnly2(n:int)-> bool:
+    # ! all(iterable) -> bool
     return all([int(i)%2 == 0 for i in str(n)])
 
 
