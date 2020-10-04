@@ -78,6 +78,7 @@ def arrayMaxConsecutiveSum3(inputArray:list, k:int)-> int:
     maxSum = sum(inputArray[:k])
     curSum = maxSum
     for i in range(1,n-k+1):
+        # ! No need go through all elements
         curSum = curSum - inputArray[i-1] + inputArray[i+k-1]
         if curSum > maxSum:
             maxSum = curSum
