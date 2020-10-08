@@ -99,7 +99,7 @@ def electionsWinners3(votes: list, k:int)->int:
     if k == 0:
         return int(votes.count(maxV)==1)
     else:
-        # ! list comprehesion
+        # ! list comprehesion WITH CONDITION
         return len([x for x in votes if x+k > maxV])
 
 
