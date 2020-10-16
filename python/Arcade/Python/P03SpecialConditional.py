@@ -4,6 +4,7 @@
 
 # * Which one is different from others?
 
+# ! Check python operator precedence
 #%%
 a = 1
 b = 1
