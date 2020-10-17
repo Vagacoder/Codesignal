@@ -24,6 +24,7 @@
 # * example inputs would these two versions produce different outputs?
 
 # ! Java rounds NEGATIVE products UP, Python rounds DOWN
+# ! Java rounds to ZERO, Python rounds DOWNWARD
 #%%
 print(-15//4)
 print(15//-4)
