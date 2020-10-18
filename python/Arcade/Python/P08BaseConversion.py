@@ -63,13 +63,23 @@ def baseConversion2(n:str, x:int)->str:
 
 
 # * Solution 3
+# ! Old string format 
 def baseConversion3(n, x):
     return "%x" % int(n, x)
+
+
+
+# * Solution 4
+# ! New string format
+def baseConversion4(n:str, x:int)->str:
+    return '{:x}'.format(int(n,x))
+
+
 
 a1 = '1302'
 a2 = 5
 e1 = 'ca'
-r1 = baseConversion3(a1, a2)
+r1 = baseConversion4(a1, a2)
 print('For {} and {}, expected: {}, result: {}'.format(a1, a2, e1, r1))
 
 # %%
