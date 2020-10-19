@@ -75,10 +75,23 @@ def feedbackReview2(feedback:str, size: int)->list:
 
 
 
+# * Solution 3
+# !! Awesome
+def feedbackReview3(feedback:str, size:int)->list:
+    return re.findall('(?:\s|^)(\S(?:.{0,%d}\S)?)(?=\s|$)' % (size-2),feedback)
+
+
+# * Solution 4
+# !! Awesome too
+def feedbackReview4(feedback:str, size:int)->list:
+    return [feedback[x:y].strip() for x,y in [(m.start(),m.end()) for m in re.finditer('(.{1,%d}$)|(.{1,%d} )'%(size,size), feedback)]]   
+
+
+
 a1 = 'This is an example feedback'
 a2 = 8
 e1 = ["This is", "an", "example", "feedback"]
-r1 = feedbackReview1(a1, a2)
+r1 = feedbackReview3(a1, a2)
 # print('Expected:')
 # print(e1)
 print('Result:')
