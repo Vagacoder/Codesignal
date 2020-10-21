@@ -59,6 +59,8 @@ def firstDuplicate2(a: list)-> int:
     
     return -1
 
+
+
 a1 = [2, 1, 3, 5, 3, 2]
 e1 = 3
 r1 = firstDuplicate2(a1)
