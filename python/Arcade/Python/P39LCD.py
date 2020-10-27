@@ -37,6 +37,8 @@
 from fractions import gcd
 import functools
 
+# * Solution 1
+# ! functools.reduce()
 def leastCommonDenominator(denominators):
     return functools.reduce(lambda a, b: a*b/gcd(a,b), denominators)
 
