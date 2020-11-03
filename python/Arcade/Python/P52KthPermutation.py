@@ -61,6 +61,7 @@ def kthPermutation1(numbers:list, k:int)->list:
 
 
 # * Solution 2
+# ! itertools islice()
 from itertools import islice
 
 def kthPermutation2(numbers:list, k:int)->list:
