@@ -50,6 +50,8 @@
 
 # * Solution 1
 def calcBonuses(bonuses:list, n:int)-> int:
+
+    # ! generator
     it = (x for x in bonuses)
     res = 0
 
