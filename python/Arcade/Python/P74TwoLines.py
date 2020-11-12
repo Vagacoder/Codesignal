@@ -1,5 +1,5 @@
 #
-# * Python 73, Two Lines
+# * Python 74, Two Lines
 # * Easy
 
 # * Consider two straight lines given as y = mx + b. You forgot what they mean 

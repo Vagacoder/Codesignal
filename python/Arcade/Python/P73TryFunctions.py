@@ -1,5 +1,5 @@
 #
-# * Python 72, Try Functions
+# * Python 73, Try Functions
 # * Easy
 
 # * You've been working on a numerical analysis when something went horribly wrong: 
