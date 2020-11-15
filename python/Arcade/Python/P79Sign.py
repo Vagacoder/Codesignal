@@ -37,9 +37,22 @@
 
 class Functions(object):
 
+    # * Solution 1
     # ! Static Method of Python Class
     @staticmethod
-    def sign(x):
+    def sign1(x):
+        if x > 0:
+            return 1
+        elif x < 0:
+            return -1
+        else:
+            return 0
+
+    
+    # * Solution 2
+    # ! Class Method of Python Class
+    @classmethod
+    def sign2(cls, x):
         if x > 0:
             return 1
         elif x < 0:
@@ -48,12 +61,20 @@ class Functions(object):
             return 0
 
 
-def sign(x):
-    return Functions.sign(x)
+
+def sign1(x):
+    return Functions.sign1(x)
+
+
+def sign2(x):
+    return Functions.sign2(x)
 
 
 x = -34
-r1 = sign(x)
+r1 = sign1(x)
+print(r1)
+
+r1 = sign2(x)
 print(r1)
 
 # %%
