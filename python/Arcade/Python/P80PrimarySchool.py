@@ -47,12 +47,12 @@ class Rectangle(object):
         return '{} x {} = {}'.format(self.height, self.width, self.area)
 
     # * Solution 1
-    # ! using __getattr__()
+    # ! using __getattr__(), this is for any undefined attribute
     def __getattr__(self, area):
         return self.height * self.width
     
     # * Solution 2
-    # # ! using @property
+    # # ! using @property, better
     @property
     def area(self):
         return self.height * self.width
@@ -64,5 +64,10 @@ def primarySchool(height, width):
 
 r1 = primarySchool(7, 4)
 print(r1)
+
+rec1 = Rectangle(7,4)
+print(rec1.volume)
+
+print(rec1.__dict__)
 
 # %%
