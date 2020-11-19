@@ -45,7 +45,7 @@ class Team(object):
 
 
     def __bool__(self):
-        return self.isTeamCool1();
+        return self.isTeamCool2();
 
         
     # * Solution 1, Brute Force
@@ -65,6 +65,40 @@ class Team(object):
 
     # * Solution 2, check in permutation
     def isTeamCool2(self):
+        def getPermutation(l: list)->list:
+            if len(l) <= 1:
+                return [l]
+
+            permutation = []
+            
+            for i, string in enumerate(l):
+                
+                # print('i, string:', i ,string)
+
+                shortList = l[:i] + l[(i+1):]
+
+                for shortP in getPermutation(shortList):
+                    
+                    # print('\t short P:', shortP)
+
+                    if string[-1].lower() == shortP[0][0].lower():
+
+                        tempList = [string]
+                        
+                        for stringInShortP in shortP:
+                            tempList.append(stringInShortP)
+
+                        # print('tempList', tempList)
+
+                        permutation.append(tempList)
+                
+            return permutation
+        
+        return len(getPermutation(self.names)) > 0
+
+
+    # * Solution 3, try DFS
+    def isTeamCool3(self):
         pass
 
 
@@ -74,8 +108,8 @@ def isCoolTeam(team):
     return bool(Team(team))
 
 
-# * Helper from Intro 33
-# ! Permutation of list of string
+# * Helper from Intro 33, improved for Solution 2
+# ! Permutation of list of string, AND check whether last char of i-1 == first char of i
 def getPermutation(l: list)->list:
     if len(l) <= 1:
         return [l]
@@ -83,16 +117,25 @@ def getPermutation(l: list)->list:
     permutation = []
     
     for i, string in enumerate(l):
+        
+        # print('i, string:', i ,string)
 
         shortList = l[:i] + l[(i+1):]
 
         for shortP in getPermutation(shortList):
-            tempList = [string]
             
-            for stringInShortP in shortP:
-                tempList.append(stringInShortP)
+            # print('\t short P:', shortP)
 
-            permutation.append(tempList)
+            if string[-1].lower() == shortP[0][0].lower():
+
+                tempList = [string]
+                
+                for stringInShortP in shortP:
+                    tempList.append(stringInShortP)
+
+                # print('tempList', tempList)
+
+                permutation.append(tempList)
         
     return permutation
 
