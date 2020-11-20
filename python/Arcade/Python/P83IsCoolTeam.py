@@ -45,7 +45,7 @@ class Team(object):
 
 
     def __bool__(self):
-        return self.isTeamCool2();
+        return self.isTeamCool3();
 
         
     # * Solution 1, Brute Force
@@ -98,9 +98,68 @@ class Team(object):
 
 
     # * Solution 3, try DFS
+    # ! Ennn, get some good hints from Comments section:
+    # ? https://pastebin.com/az7gmEzb
     def isTeamCool3(self):
-        pass
+        namesLow = [i.lower() for i in self.names]
+        
+        letters = "abcdefghijklmnopqrstuvwxyz"
+        FROM  = {i: [] for i in letters}
+        TO    = {i: [] for i in letters}
+        
+        for i in letters:
+            for j in namesLow:
+                if i == j[-1]:
+                    FROM[i].append(j) # Find names that lead to current letter
+                if i == j[0]:
+                    TO[i].append(j) # Find names that letter can lead to 
+        
+        
+        # Debugging and visualizing the graph
+        # for i in letters:
+        #     print("____________________")
+        #     print("Node: %s" % i)
+        #     print("From: ", FROM[i])
+        #     print("To: ", TO[i])
+        
+        print(FROM)
+        print(TO)
 
+        # ! Quick rule out impossible cases
+        start = False
+        end   = False
+        for i in letters:
+            if len(FROM[i]) + 1 == len(TO[i]):
+                # Found the start!
+                if start:
+                    return False # Whoops, too many starts!
+                start = True
+            elif len(FROM[i]) == len(TO[i]) + 1:
+                # Found the end!
+                if end:
+                    return False # Whoops, too many ends!
+                end = True
+            elif len(FROM[i]) != len(TO[i]):
+                return False
+        
+        # * Check if graph is connected
+        visited = {0}
+        queue = [0]
+        
+        while queue:
+            
+            name = queue.pop(0)
+            for ind, teammate in enumerate(namesLow):
+                if ind in visited:
+                    continue
+                if namesLow[name][0] == teammate[-1]:
+                    visited.add(ind)
+                    queue.append(ind)
+                elif namesLow[name][-1] == teammate[0]:
+                    visited.add(ind)
+                    queue.append(ind)
+        
+        return len(visited) == len(self.names) # Is everyone found?
 
 
 
@@ -148,5 +207,5 @@ print(r1)
 # * tester for permutation
 # print(getPermutation(["aa", "bb"]))
 # print(getPermutation(["aba", "bbb", "bab"]))
-# print(getPermutation(team))
+print(getPermutation(team))
 # %%
