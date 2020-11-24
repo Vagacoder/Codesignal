@@ -78,6 +78,7 @@
 #     A list representing the structure of the xml file as described above.
 
 #%%
+import re
 
 # * Solution 1
 def xmlTags1(xml):
@@ -98,7 +99,7 @@ def xmlTags1(xml):
             # * get whole current tag
             currentTag = xml[leftAngleIndex+1:cur]
 
-            print('current tag', currentTag)
+            # print('current tag', currentTag)
 
             # ? if its open tag
             if currentTag[-1] != '/' and currentTag[0] != '/':
@@ -112,13 +113,15 @@ def xmlTags1(xml):
                 if currentTagName not in attributes:
                     attributes[currentTagName] = set()
 
-                # * if tag has attributs
+                # * if tag has attributes
                 if len(tokens)>1:
-                    for i in range(1, len(tokens)):
-                        attributes[currentTagName].add(tokens[i].split('=')[0])
+                    attrs = re.findall('\s([\s\S]+?)="[\s\S]*?"', currentTag)
+                    for attr in attrs:
+                        attributes[currentTagName].add(attr)
 
             # ? if its self-closing tag
             elif currentTag[-1] == '/':
+                currentTag = currentTag[:-1]
                 # * split tag to tokens
                 tokens = currentTag.split()
                 currentTagName = tokens[0]
@@ -128,32 +131,40 @@ def xmlTags1(xml):
                 
                 # * add self-closing tag into subTags
                 if currentTagName not in subTags:
-                    subTags[currentTagName] = set()
+                    subTags[currentTagName] = []
 
                 # * update attributes
                 if currentTagName not in attributes:
                     attributes[currentTagName] = set()
 
-                # * if tag has attributs
+                # * if tag has attributes
+                # ! Note: attributes could be empty string, using * instead of +
                 if len(tokens)>1:
-                    for i in range(1, len(tokens)):
-                        attributes[currentTagName].add(tokens[i].split('=')[0])
+                    attrs = re.findall('\s([\s\S]+?)="[\s\S]*?"', currentTag)
+                    for attr in attrs:
+                        attributes[currentTagName].add(attr)
 
             # ? if its closing tag
             # * elif currentTag[1] == '/':
             else:   
                 currentTagName = currentTag[1:]
 
-                # print('closing', currentTagName)
-
                 # * add closing tag into subTags
                 if currentTagName not in subTags:
-                    subTags[currentTagName] = set()
+                    subTags[currentTagName] = []
 
                 # * add nested tags into current tag's subtags
+                # * hold sub tags of current tag
+                popedTagList = []
                 while stack[-1] != currentTagName:
+                    # * pop sub tag from the top of stack
                     popedTag = stack.pop()
-                    subTags[currentTagName].add(popedTag)
+                    # ! poped sub tag is NEITHER in poptag list, NOR in current tag's sub tag list
+                    if popedTag not in subTags[currentTagName] and popedTag not in popedTagList:
+                        # ! insert at the beginning of list to ensure correct order
+                        popedTagList.insert(0, popedTag)        
+                        
+                subTags[currentTagName]+=popedTagList
 
         cur += 1
     
@@ -167,21 +178,14 @@ def xmlTags1(xml):
     def getTagString(tag, prefix):
         # * get attributes for tag
         attrs = ', '.join(sorted(list(attributes[tag])))
-
-        # print('@{}@'.format(attrs))
-
         result.append(prefix + tag +'(' + attrs + ')')
 
-        # TODO 
         # * recursive visit subtags
-        for subTag in list(subTags[tag]):
+        for subTag in subTags[tag]:
             getTagString(subTag, (prefix+'--'))
 
 
     root = stack[0]
-
-    # print('root', root)
-
     getTagString(root, '')
 
     return result
@@ -206,6 +210,39 @@ xml1 = '<data>\
                 <similar name="fox" size="similar"/>\
             </animal>\
         </data>'
+r1 = xmlTags1(xml1)
+print(r1)
+
+xml1 = '<data>\
+            <a pooh=\"20\">\
+                <b meh=\"lksjljk\">\
+                    <c/>\
+                </b>\
+            </a>\
+            <a kuku=\"llala\">\
+                <b kek=\"q\">\
+                    <d test=\"1\"/>\
+                </b>\
+            </a>\
+        </data>'
+r1 = xmlTags1(xml1)
+print(r1)
+
+xml1 = '<a>\
+            <b p="">\
+                <c n="" m=""/>\
+            </b>\
+            <b s="">\
+                <d></d>\
+                <c l="" o=""/>\
+            </b>\
+            <b>\
+                <c k=""/>\
+                <e>\
+                    <h></h>\
+                </e>\
+            </b>\
+        </a>'
 r1 = xmlTags1(xml1)
 print(r1)
 
