@@ -114,6 +114,7 @@ def xmlTags1(xml):
                     attributes[currentTagName] = set()
 
                 # * if tag has attributes
+                # ! Note: attributes could be empty string, using * instead of +
                 if len(tokens)>1:
                     attrs = re.findall('\s([\s\S]+?)="[\s\S]*?"', currentTag)
                     for attr in attrs:
