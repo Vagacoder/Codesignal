@@ -194,11 +194,76 @@ def xmlTags1(xml):
 
     
 # * Solution 2
-import xml
-def xmlTags2(xmlf):
-    pass
+import xml.etree.ElementTree as ET
+def xmlTags2(xml):
+
+    attributes = {}
+    subTags = {}
+
+    root = ET.fromstring(xml)
+
+    # * testing xml lib
+    # print('root', root)
+    # print('root tag', root.tag)
+    # print('root attrib',root.attrib)
+    # for child in root:
+    #         print('child', child)
+    #         print('child tag', child.tag)
+    #         print('child attrib',child.attrib)
+
+    # * recursive parsing xml tags
+    def xmlTag(root):
+        # * root tag name
+        currentTag = root.tag
+
+        # print('tag name:', currentTag)
+        # print('attri', root.attrib)
+
+        # * process root attributes
+        if currentTag not in attributes:
+            attributes[currentTag] = []
+
+        for key, val in root.attrib.items():
+            if key not in attributes[currentTag]:
+                attributes[currentTag].append(key)
+
+        # * process children of root
+        if currentTag not in subTags:
+            subTags[currentTag] = []
+        
+        for child in root:
+            childTagName = child.tag
+            if childTagName not in subTags:
+                subTags[childTagName] = []
+            if childTagName not in subTags[currentTag]:
+                subTags[currentTag].append(childTagName)
+            xmlTag(child)
 
 
+    # * parse xml starting from root
+    xmlTag(root)
+
+    # print(attributes)
+    # print(subTags)
+
+    result = []
+
+    # * helper, same as the one in Solution 1
+    def getTagString(tag, prefix):
+        # * get attributes for tag
+        attrs = ', '.join(sorted(list(attributes[tag])))
+        result.append(prefix + tag +'(' + attrs + ')')
+
+        # * recursive visit subtags
+        for subTag in subTags[tag]:
+            getTagString(subTag, (prefix+'--'))
+
+
+    getTagString(root.tag, '')
+    return result
+
+
+# * Tests
 xml1 = '<data>\
             <animal name="cat">\
                 <genus>Felis</genus>\
@@ -211,7 +276,7 @@ xml1 = '<data>\
                 <similar name="fox" size="similar"/>\
             </animal>\
         </data>'
-r1 = xmlTags1(xml1)
+r1 = xmlTags2(xml1)
 print(r1)
 
 xml1 = '<data>\
