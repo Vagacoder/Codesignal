@@ -68,8 +68,66 @@
 #     Modified jsonFile.
 
 #%%
-
+'''
+https://www.geeksforgeeks.org/json-load-in-python/?ref=lbp
+https://docs.python.org/3/library/json.html
+'''
 def buildCommand(jsonFile):
-    pass
+    import json
+    obj1 = json.loads(jsonFile)
+    
+    # print(obj1)
+
+    def resetJsonValue(jsObject):
+        for key, val in jsObject.items():
+            # print('key: ', key)
+            # print('value: ', val)
+            # print('value type: ', type(val))
+            if type(val) is str:
+                jsObject[key] = ''
+            elif type(val) is int:
+                jsObject[key] = 0
+            elif type(val) is float:
+                jsObject[key] = 0
+            elif type(val) is list:
+                jsObject[key] = []
+            elif type(val) is tuple:
+                jsObject[key] = (0,)
+            elif type(val) is set:
+                jsObject[key] = set()
+            elif type(val) is bool:
+                jsObject[key] = False
+            else:
+                jsObject[key] = resetJsonValue(jsObject[key])
+            
+        return jsObject
 
 
+    return json.dumps(resetJsonValue(obj1))
+
+
+
+jsonFile1 ="""
+{
+    "version": "0.1.0",
+    "command": "c:python",
+    "args": ["app.py"],
+    "problemMatcher": {
+        "fileLocation": ["relative", "${workspaceRoot}"],
+        "pattern": {
+            "regexp": "^(.*)+s$",
+            "message": 1
+        }
+    }
+}
+"""
+r1 = buildCommand(jsonFile1)
+print(r1)
+
+jsonFile1 ="""
+{\"one\": \"1\", \"two\": [2], \"three\": 3, \"four\": 4.6}
+"""
+r1 = buildCommand(jsonFile1)
+print(r1)
+
+# %%
