@@ -74,9 +74,12 @@ https://docs.python.org/3/library/json.html
 '''
 def buildCommand(jsonFile):
     import json
+
+    #  * json.loads(), parse string to dict
     obj1 = json.loads(jsonFile)
     
     # print(obj1)
+    # print(type(obj1))
 
     def resetJsonValue(jsObject):
         for key, val in jsObject.items():
@@ -102,7 +105,7 @@ def buildCommand(jsonFile):
             
         return jsObject
 
-
+    # * json.dumps(), convert dict to string
     return json.dumps(resetJsonValue(obj1))
 
 
@@ -125,7 +128,7 @@ r1 = buildCommand(jsonFile1)
 print(r1)
 
 jsonFile1 ="""
-{\"one\": \"1\", \"two\": [2], \"three\": 3, \"four\": 4.6}
+{"one": "1", "two": [2], "three": 3, "four": 4.6}
 """
 r1 = buildCommand(jsonFile1)
 print(r1)
