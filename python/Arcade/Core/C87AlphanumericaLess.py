@@ -81,7 +81,7 @@
 
 # * Solution 1
 # ! Bad idea
-def alphanumericLess(s1: str, s2: str) -> bool:
+def alphanumericLess1(s1: str, s2: str) -> bool:
     n1 = len(s1)
     n2 = len(s2)
     i1 = 0
@@ -113,6 +113,85 @@ def alphanumericLess(s1: str, s2: str) -> bool:
                 i2 += 1
 
     return n1 <= n2
+
+
+# * Solution 2
+def alphanumericLess(s1: str, s2: str) -> bool:
+    token1 = []
+    token2 = []
+    n1 = len(s1)
+    n2 = len(s2)
+
+    # * get token 1
+    i = 0
+    while i < n1:
+        c = s1[i]
+        if c.isdigit():
+            numStr = ''
+            while i < n1 and s1[i].isdigit():
+                numStr += s1[i]
+                i += 1
+            token1.append(numStr)
+        else:
+            token1.append(c)
+            i += 1
+    
+    # print(token1)
+
+    # * get token 2
+    i = 0
+    while i < n2:
+        c = s2[i]
+        if c.isdigit():
+            numStr = ''
+            while i < n2 and s2[i].isdigit():
+                numStr += s2[i]
+                i += 1
+            token2.append(numStr)
+        else:
+            token2.append(c)
+            i += 1
+    
+    # print(token2)
+
+    tn1 = len(token1)
+    tn2 = len(token2)
+    tn = min(tn1, tn2)
+
+    # * compare token1 and token 2, one by one;
+    # ! The cases of > or < make decison, only cases of == pass
+    for i in range(tn):
+        if token1[i].isdigit() and token2[i].isdigit():
+            if int(token1[i]) > int(token2[i]):
+                return False
+            elif int(token1[i]) < int(token2[i]):
+                return True
+        elif token1[i] > token2[i]:
+            return False
+        elif token1[i] < token2[i]:
+            return True
+
+    # * if all tokens are same, compare number of tokens
+    # ! The cases of > or < make decison, only cases of == pass
+    if tn1 > tn2:
+        return False
+    elif tn1 < tn2:
+        return True
+
+    # * if all tokens are same, number of tokens are same
+    # * check leading zero number for digital tokens
+    # ! The cases of > or < make decison, only cases of == pass
+    for j in range(tn):
+        if ( token1[j].isdigit() and token2[j].isdigit() ) and ( int(token1[j]) == int(token2[j]) ):
+            if len(token1[j]) < len(token2[j]):
+                return False
+            elif len(token1[j]) > len(token2[j]):
+                return True
+
+    # * all tokens are same, number of tokens are same, MUST False
+    return False
+
+
 
 
 a1 = 'a'
@@ -147,3 +226,13 @@ a9 = '0000'
 a10 = '000'
 r7 = alphanumericLess(a9, a10)
 print('ex: {}, ar: {}'.format(True, r7))
+
+a11 = 'x817skjd8309218xn'
+a12 = 'x817sljd8309217xn'
+r8 = alphanumericLess(a11, a12)
+print('ex: {}, ar: {}'.format(True, r8))
+
+a13 = 'a'
+r9 = alphanumericLess(a1, a13)
+print('ex: {}, ar: {}'.format(False, r9))
+# %%
