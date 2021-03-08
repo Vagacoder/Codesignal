@@ -85,12 +85,55 @@ def runnersMeetings2(startPosition: list, speed: list) -> int:
     return lcm(24, 54)
     
 
+
+
+# * Solution 3
+import math
+
+def runnersMeetings3(startPosition, speed):
+    l = len(speed)
+    a = []
+    for i in range(l-1):
+        a.extend([(startPosition[i]-startPosition[j])/(speed[j]-speed[i]) for j in range(i+1, l) if speed[j]-speed[i]!=0])
+    b = [a.count(i) for i in set(a) if i >= 0]
+    print(b)
+    # return math.sqrt(max(b)*2+1/4)+1/2 if b != [] else -1
+    return math.sqrt(max(b)*2+1/4)+1/2 if b != [] else -1
+
+
+
+# * Solution 4
+def runnersMeetings4(startPosition, speed):
+    res = -1
+    n = len(startPosition)
+    for i in range(n):
+        meetings = {}
+        for j in range(i+1, n):
+            if speed[i] == speed[j]:
+                if startPosition[i] == startPosition[j]:
+                    time = 0
+                    place = startPosition[i]
+                else:
+                    continue
+            elif startPosition[i] < startPosition[j] or speed[i] < speed[j]:
+                time = (startPosition[i]-startPosition[j])/(speed[j]-speed[i])
+                place = startPosition[i] + speed[i]*time
+            else:
+                continue
+            if (time, place) not in meetings:
+                meetings[(time, place)] = 1
+            meetings[(time, place)] += 1
+            if meetings[(time, place)] > res:
+                res = meetings[(time, place)]
+    return res
+
+
 a1 = [1, 4, 2]
 s1 = [27, 18, 24]
-r1 = runnersMeetings2(a1, s1)
+r1 = runnersMeetings3(a1, s1)
 print('ex: {}, ar: {}'.format(3, r1))
 
 a1 = [1, 1000]
 s1 = [23, 22]
-r1 = runnersMeetings2(a1, s1)
+r1 = runnersMeetings3(a1, s1)
 print('ex: {}, ar: {}'.format(2, r1))
