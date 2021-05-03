@@ -47,7 +47,7 @@ def sortByLength(inputArray: list) -> list:
     for i in range(1, n):
         for j in range(i, 0, -1):
             if len(inputArray[j]) >= len(inputArray[j-1]):
-                continue
+                break
             else:
                 inputArray[j], inputArray[j-1] = inputArray[j-1], inputArray[j]
     
