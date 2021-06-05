@@ -68,6 +68,8 @@ def curiousClock(someTime, leavingTime):
     # print(lTime)
     # print(type(lTime))
     deltaTime = lTime - sTime
+    # print(deltaTime)
+    # print(type(deltaTime))
     return dt.strftime((sTime - deltaTime), "%Y-%m-%d %H:%M")
 
 
