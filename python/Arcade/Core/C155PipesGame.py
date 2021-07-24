@@ -124,6 +124,8 @@ def pipesGame(state: list) -> int:
         '7': {1: 1, 2: 2, 3: 3, 4: 4}
     }
 
+
+
     # * define a function to check 
     def check(row: int, col: int, direction: int, source: str, steps: int) -> (bool, int):
         newRow = row + go[direction][0]
@@ -136,8 +138,8 @@ def pipesGame(state: list) -> int:
         # * base case 2: find correct sink
         if state[newRow][newCol] == source.upper():
             return (True, steps)
-        # * base case 3: find wrong sink
-        if state[newRow][newCol].isalpha:
+        # * base case 3: find wrong sink or other source
+        if state[newRow][newCol].isalpha():
             return (False, steps)
         
         # * get next pipe
@@ -146,7 +148,9 @@ def pipesGame(state: list) -> int:
         # * base case 4: no pipe
         if newPipe == '0':
             return (False, steps)
-        # TODO: * base case 5: wrong pipe (no connect to this one)
+        # * base case 5: wrong pipe (no connect to this one)
+        if direction not in pipes[newPipe]:
+            return (False, steps)
 
 
         newDirection = pipes[newPipe][direction]
@@ -155,12 +159,42 @@ def pipesGame(state: list) -> int:
 
     # print(check(2, 1, 2, 'b', 0))
 
+    # * A collection of all directions of all sources
+    results = {}
+
+    # * is whole puzzle correct?
+    isCorrect = True
+    
     for key in starts.keys():
-        print(starts[key])
+        result = {}
+        # print('start location:', starts[key])
         for d in range(1,5):
-            print(check(starts[key][0], starts[key][1], d, key, 0))
+            # print(check(starts[key][0], starts[key][1], d, key, 0))
+            result[d] = check(starts[key][0], starts[key][1], d, key, 0)
+            if result[d][0] == False and result[d][1] > 0:
+                isCorrect = False
+        
+        results[key] = result
+
+    print(results)
+    print(isCorrect)
 
 
+    # * For counting watered cell number, if whole puzzle is correct
+    waterCovery = [[0]*m for _ in range(n)]
+
+    # TODO: define a function extend alone pipe from source to end
+    def extend(row: int, col: int, direction: int, steps: int):
+        pass
+
+    # * if whole puzzle is correct, count the number of cells full of water
+    if isCorrect:
+        pass    
+    # * if whole puzzle is wrong, count the number of cells full of water
+    else:
+        pass
+        
+        
 
 
 s1 = ["a224C22300000",
@@ -170,3 +204,5 @@ s1 = ["a224C22300000",
       "0006A45000000"]
 r1 = pipesGame(s1)
 print(r1)
+
+# %%
