@@ -165,44 +165,118 @@ def pipesGame(state: list) -> int:
     # * is whole puzzle correct?
     isCorrect = True
     
-    for key in starts.keys():
+    for source in starts.keys():
         result = {}
         # print('start location:', starts[key])
         for d in range(1,5):
             # print(check(starts[key][0], starts[key][1], d, key, 0))
-            result[d] = check(starts[key][0], starts[key][1], d, key, 0)
+            result[d] = check(starts[source][0], starts[source][1], d, source, 0)
             if result[d][0] == False and result[d][1] > 0:
                 isCorrect = False
         
-        results[key] = result
+        results[source] = result
 
-    print(results)
-    print(isCorrect)
+    # print(results)
+    # print(isCorrect)
 
 
     # * For counting watered cell number, if whole puzzle is correct
     waterCovery = [[0]*m for _ in range(n)]
 
     # TODO: define a function extend alone pipe from source to end
-    def extend(row: int, col: int, direction: int, steps: int):
-        pass
+    def extend(row: int, col: int, direction: int, steps: int)-> None:
+        # * base case 1: no more extension
+        if steps == 0:
+            return
+
+        # * next pipe
+        newRow = row + go[direction][0]
+        newCol = col + go[direction][1]
+        # print(newRow, newCol, direction, source, steps)
+
+        # * base case 2: next pipe is out of range
+        # if newRow > n-1 or newRow < 0 or newCol > m-1 or newCol < 0:
+        #     return
+        # * base case 3: find correct sink, stop and no mark
+        if state[newRow][newCol] == source.upper():
+            return
+        
+
+        # * mark next cell/pipe is watered
+        waterCovery[newRow][newCol] = 1
+
+        # * get next pipe to get next direction
+        newPipe = state[newRow][newCol]
+        # print('newPipe', newPipe)
+        newDirection = pipes[newPipe][direction]
+        # print('newDirection', newDirection)
+
+        return extend(newRow, newCol, newDirection, steps-1)
+
+    # * test source b at (2,1)
+    # print('waterCovery start:', waterCovery)
+    # extend(2, 1, 2, 9)
+    # print('waterCovery after:', waterCovery)
+
 
     # * if whole puzzle is correct, count the number of cells full of water
     if isCorrect:
-        pass    
+        pass
+        for source in starts.keys():
+            # print(source)
+            result = results[source]
+            for direction in range(1,5):
+                if result[direction][0] == True:
+                    extend(starts[source][0], starts[source][1], direction, result[direction][1])
+
     # * if whole puzzle is wrong, count the number of cells full of water
     else:
-        pass
+        # * find minimum leakage step
+        minLeakageStep = n*m
+        for source in starts.keys():
+            result = results[source]
+            for direction in range(1,5):
+                if result[direction][0] == False and 0 < result[direction][1] < minLeakageStep:
+                    minLeakageStep = result[direction][1]
         
+        print(minLeakageStep)
         
+        for source in starts.keys():
+            result = results[source]
+            for direction in range(1,5):
+                if result[direction][1] > 0:
+                    extend(starts[source][0], starts[source][1], direction, minLeakageStep)
+
+
+
+        
+    # print('waterCovery after:', waterCovery)
+
+    def countWateredCell() -> int:
+        count = 0
+        for i in range(n):
+            count += sum(waterCovery[i])
+        if isCorrect:
+            return count
+        else:
+            return -count
+    
+    return countWateredCell()
 
 
 s1 = ["a224C22300000",
       "0001643722B00",
       "0b27275100000",
-      "00c7256500000",
+      "01c7256500000",
       "0006A45000000"]
 r1 = pipesGame(s1)
 print(r1)
 
+s1 = ["a224C22300000",
+      "0001643722B00",
+      "0b27275100000",
+      "01c7256500000",
+      "0006A45000000"]
+r1 = pipesGame(s1)
+print(r1)
 # %%
