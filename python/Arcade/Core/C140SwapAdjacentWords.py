@@ -43,7 +43,11 @@ def swapAdjacentWords2(s: str)-> str:
     # ! these two do not work
     # return re.sub('(\w+)\s(\w+)', '\2\s\1', s)
     # return re.sub('(\w+)\s(\w+)', '\2 \1', s)
-    return re.sub('(\w+)\s(\w+)', r'\2 \1', s)
+    # ! this one works, 1st \ escape in string, 2nd \ escape in regex
+    return re.sub('(\w+)\s(\w+)', '\\2 \\1', s)
+
+    # ! this one ussing raw string, no need escape for string
+    # return re.sub('(\w+)\s(\w+)', r'\2 \1', s)
 
 
 s1 = 'How are you today guys'
