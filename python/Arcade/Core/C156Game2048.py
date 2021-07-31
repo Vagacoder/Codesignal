@@ -69,32 +69,160 @@
 
 def game2048(grid: list, path: str) -> list:
 
+    N = 4
+
+    # * 1, moving left
+    def moveL():
+        def stackL(row: list):
+            row = [x for x in row if x != 0]
+            for j in range(N-len(row)):
+                row.append(0)
+            return row
+
+        for i in range(N):
+            # * 1, stack tiles
+            grid[i] = stackL(grid[i])
+
+            # * 2, merge tiles
+            for j in range(N-1):
+                if grid[i][j] == grid[i][j+1]:
+                    grid[i][j] *= 2
+                    grid[i][j+1] = 0
+                    # break
+
+            # * 3, stack tiles again
+            grid[i] = stackL(grid[i])  
+
+
+    # * 2, moving up
+    def moveU():
+        def stackU(col: list):
+            col = [x for x in col if x != 0]
+            for j in range(N-len(col)):
+                col.append(0)
+            return col
+
+        for j in range(N):
+            col = [grid[0][j], grid[1][j], grid[2][j], grid[3][j]]
+            # print(col)
+            
+            # * 1 stack tiles
+            col = stackU(col)
+            # print(col)
+
+            # * 2 merge tiles
+            for i in range(N-1):
+                if col[i] == col[i+1]:
+                    col[i] *= 2
+                    col[i+1] = 0
+                    # break
+            
+            # * 3 stack tiles again
+            col = stackU(col)
+            [grid[0][j], grid[1][j], grid[2][j], grid[3][j]] = col
+            
+            # print(grid)
+            
+
+        
+
+    # * 3, moving right
+    def moveR():
+        def stackR(row: list):
+            row = [x for x in row if x != 0]
+            for j in range(N-len(row)):
+                row.insert(0, 0)
+            return row
+
+        for i in range(N):
+            # * 1, stack tiles
+            grid[i] = stackR(grid[i])
+            # print(grid)
+            # print()
+
+            # * 2, merge tiles
+            for j in range(N-1, 0, -1):
+                if grid[i][j] == grid[i][j-1]:
+                    grid[i][j] *= 2
+                    grid[i][j-1] = 0
+                    # break
+            # print(grid)
+
+            # * 3, stack tiles again
+            grid[i] = stackR(grid[i])  
+            # print(grid)
+
+
+    # * 4, moving down
+    def moveD():
+        def stackD(col: list):
+            col = [x for x in col if x != 0]
+            for j in range(N-len(col)):
+                col.insert(0, 0)
+            return col
+
+        for j in range(N):
+            col = [grid[0][j], grid[1][j], grid[2][j], grid[3][j]]
+            # print(col)
+            
+            # * 1 stack tiles
+            col = stackD(col)
+            # print(col)
+
+            # * 2 merge tiles
+            for i in range(N-1, 0, -1):
+                if col[i] == col[i-1]:
+                    col[i] *= 2
+                    col[i-1] = 0
+                    # break
+            
+            # * 3 stack tiles again
+            col = stackD(col)
+            [grid[0][j], grid[1][j], grid[2][j], grid[3][j]] = col
+
+
     # * Directions:
-    # * 1: up
-    # * 2: right
-    # * 3: down
-    # * 4: left
-
-    # TODO
+    # * L: move left
+    # * U: move up
+    # * R: move right
+    # * D: move down
     go = {
-        1: (-1, 0),
-        2: (0, 1),
-        3: (1, 0),
-        4: (0, -1)
+        'L': moveL,
+        'U': moveU,
+        'R': moveR,
+        'D': moveD
     }
+    
+    # print(grid)
 
-    # * moving 
-    def move(direction: int) :
-        pas
+    # moveR()
+    # moveL()
+    # moveU()
+    # moveD()
 
-    pass
+    for p in path:
+        go[p]()
+
+
+    # print(grid)
+    return grid
 
 
 
+# g1 = [[0, 0, 0, 0],
+#       [0, 0, 2, 2],
+#       [0, 0, 2, 4],
+#       [2, 2, 4, 8]]
+# p1 = 'RR'
+# r1 = game2048(g1, p1)
+# print(r1)
 
-g1 = [[0, 0, 0, 0],
-      [0, 0, 2, 2],
-      [0, 0, 2, 4],
-      [2, 2, 4, 8]]
-p1 = 'RR'
+g1 = [[0,0,0,2], 
+      [0,0,4,2], 
+      [0,0,4,2], 
+      [0,0,4,2]]
+p1 = 'D'
 r1 = game2048(g1, p1)
+print(r1)
+
+# %%
