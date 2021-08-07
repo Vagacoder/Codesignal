@@ -100,34 +100,80 @@ def snakeGame(gameBoard: list, commands: str)-> list:
     # * 2: up
     # * 3: down
     # * 4: right
-    # ! Note: < + > = 5 and ^ + v = 5
+    # ! Note: < + > = 5 and ^ + v = 5, to easy find reverese direction
 
-    # * map character to number
-    mapCharToNum= {
+    # * map direction in character to number
+    mapCharToNum: dict[str: int] = {
         '<': 1,
         '^': 2,
         'v': 3,
         '>': 4
     }
 
-    SumOfDir = 5
+    # * map direction in number to character
+    mapNumToChar: dict[int: str] = {
+        1: '<',
+        2: '^',
+        3: 'v',
+        4: '>'
+    }
 
-    # * map number to coordination change (x, y)
-    mapNumToDir = {
+    # * turn left
+    turnLeft: dict[int: int] = {
+        1: 3,
+        2: 1,
+        3: 4,
+        4: 2
+    }
+
+    # * turn right
+    turnRight: dict[int: int] = {
+        1: 2,
+        2: 4,
+        3: 1,
+        4: 3
+    }
+
+    # ! Note: < + > = 5 and ^ + v = 5,
+    SumOfDir: int = 5
+
+    # * map direction in number to coordination changing (row, col)
+    # * this is also next coordination changing for moving forward
+    # * 1: going left,  row no change, col -= 1
+    # * 2: going up,    row -= 1     , col no change
+    # * 3: going down,  row += 1     , col no change
+    # * 4: going right, row no change, col += 1
+    mapNumToDir: dict[int: tuple[int, int]] = {
         1: (0, -1),
         2: (-1, 0),
         3: (1, 0),
         4: (0, 1)
     }
 
+    # * next coordination changing for turn left
+    nextCordForLeft: dict[int: tuple[int, int]] = {
+        1: (1, 0),
+        2: (0, -1),
+        3: (0, 1),
+        4: (-1, 0),
+    }
+
+    # * next coordination changing for turn right
+    nextCordForRight: dict[int: tuple[int, int]] = {
+        1: (-1, 0),
+        2: (0, 1),
+        3: (0, -1),
+        4: (1, 0),
+    }
+
     # * Node for snake
     class Node:
-        def __init__(self, coord, direction):
+        def __init__(self, coord: tuple, direction: int):
             self.coord = coord
             self.direction = direction
             self.next = None
 
-    # * the Class of Snake, which is a linked list
+    # * the Class of Snake, which is a linked list, start ======================
     class Snake:
         # * Constructor
         def __init__(self, head: Node):
@@ -144,16 +190,139 @@ def snakeGame(gameBoard: list, commands: str)-> list:
         def moveF(self):
             if not self.error:
                 direction = self.head.direction
+
+                # * check if moving out of gameboard
+                headCoord = self.head.coord
+                nextCoord = (headCoord[0] + mapNumToDir[direction][0],
+                             headCoord[1] + mapNumToDir[direction][1])
+                if nextCoord[0] < 0 or nextCoord[0] >= N or nextCoord[1] < 0 or nextCoord[1] >= M:
+                    self.error = True
+                    self.setErrorSnake()
+                    return
+
+                # * check if eating self
+                if gameBoard[nextCoord[0]][nextCoord[1]] == '*':
+                    self.error = True
+                    self.setErrorSnake()
+                    return
+
+                # * moving forward
+                nextNode = Node((nextCoord[0],nextCoord[1]), direction)
+                nextNode.next = self.head
+                self.head = nextNode
+
+                cur = self.head
+                while cur.next != None:
+                    if cur.next == self.tail:
+                        cur.next = None
+                        self.tail = cur
+                    else:
+                        cur = cur.next
+                
+                self.redrawGameBoard()
+
+
         
         # * turn snake right
         def turnR(self):
-            pass
+            if not self.error:
+                direction = self.head.direction
+                
+                # # * check if moving out of gameboard
+                # headCoord = self.head.coord
+                # nextCoord = (headCoord[0] + nextCordForRight[direction][0],
+                #              headCoord[1] + nextCordForRight[direction][1])
+                # if nextCoord[0] < 0 or nextCoord[0] >= N or nextCoord[1] < 0 or nextCoord[1] >= M:
+                #     self.error = False
+                #     self.setErrorSnake()
+                #     return
+
+                # # * check if eating self
+                # if gameBoard[nextCoord[0]][nextCoord[1]] == '*':
+                #     self.error = False
+                #     self.setErrorSnake()
+                #     return
+
+                # * turning right
+                newDirection = turnRight[direction]
+                self.head.direction = newDirection
+                # nextNode = Node((nextCoord[0],nextCoord[1]), newDirection)
+                # nextNode.next = self.head
+                # self.head = nextNode
+
+                # cur = self.head
+                # while cur.next != None:
+                #     if cur.next == self.tail:
+                #         cur.next = None
+                #         self.tail = cur
+                #     else:
+                #         cur = cur.next
+                
+                self.redrawGameBoard()
 
         # * turn snake left
         def turnL(self):
-            pass
+            if not self.error:
+                direction = self.head.direction
+
+                # # * check if moving out of gameboard
+                # headCoord = self.head.coord
+                # nextCoord = (headCoord[0] + nextCordForLeft[direction][0],
+                #              headCoord[1] + nextCordForLeft[direction][1])
+                # if nextCoord[0] < 0 or nextCoord[0] >= N or nextCoord[1] < 0 or nextCoord[1] >= M:
+                #     self.error = False
+                #     self.setErrorSnake()
+                #     return
+
+                # # * check if eating self
+                # if gameBoard[nextCoord[0]][nextCoord[1]] == '*':
+                #     self.error = False
+                #     self.setErrorSnake()
+                #     return
+
+                # * turning left
+                newDirection = turnLeft[direction]
+                self.head.direction = newDirection
+                # nextNode = Node((nextCoord[0],nextCoord[1]), newDirection)
+                # nextNode.next = self.head
+                # self.head = nextNode
+
+                # cur = self.head
+                # while cur.next != None:
+                #     if cur.next == self.tail:
+                #         cur.next = None
+                #         self.tail = cur
+                #     else:
+                #         cur = cur.next
+                
+                self.redrawGameBoard()
+
+    
+        # * set error snake
+        def setErrorSnake(self):
+            for i in range(N):
+                for j in range(M):
+                    if gameBoard[i][j] == '*' or gameBoard[i][j] in '<^>v':
+                        gameBoard[i][j] = 'X'
+
+        # * redraw game board
+        def redrawGameBoard(self):
+            for i in range(N):
+                for j in range(M):
+                    gameBoard[i][j] = '.'
+            gameBoard[self.head.coord[0]][self.head.coord[1]] = mapNumToChar[self.head.direction]
+            cur = self.head.next
+            while cur != None:
+                gameBoard[cur.coord[0]][cur.coord[1]] = '*'
+                cur = cur.next
+                
+        
+    # * the Class of Snake, which is a linked list, end ========================
 
 
+
+    # * Build Snake, start =====================================================
+    # ! Maybe should make a copy of game board and go through the copy
     # * find head of snake
     head = Node(None, None)
     for i in range(N):
@@ -169,39 +338,90 @@ def snakeGame(gameBoard: list, commands: str)-> list:
     currentCoord = snake.head.coord
 
     # TODO
-    # * find 2nd node
+    # * find 2nd node, 
+    # ! the direction of 2nd node is fixed
     reversedDirectionUpdate = mapNumToDir[SumOfDir - currentDirection]
     nextCoord = ((currentCoord[0] + reversedDirectionUpdate[0]),
                     (currentCoord[1] + reversedDirectionUpdate[1]))
-    print(nextCoord)
+    # print('nextCoord', nextCoord)
+
     nextNode = Node((nextCoord[0],nextCoord[1]), None)
-    print(nextNode)
-    snake.addNode(nextNode)
-    print(snake.tail.coord)
+    # print(nextNode)
 
+    # * if has 2nd node
+    if gameBoard[nextCoord[0]][nextCoord[1]] == '*':
+        snake.addNode(nextNode)
+        # print('snake tail coord', snake.tail.coord)
 
+        currentCoord = nextNode.coord        
+        # print('currentCoord', currentCoord)
 
-    # * find other nodes
-    while True:
-        break
+        # * find other nodes, 
+        # ! the direction of other nodes is not fixed
+        while True:
+            isTail = True
 
+            # * check all direction except currentDirection (not going back)
+            for direc in mapNumToDir.keys():
+                if direc != currentDirection:
+                    direcChange = mapNumToDir[direc]
+                    nextCoord = ((currentCoord[0] + direcChange[0]),
+                                 (currentCoord[1] + direcChange[1]))
+                    
+                    # print('nextCoord for other', nextCoord)
 
+                    # * if nextCoord out of gameboard
+                    if nextCoord[0] < 0 or nextCoord[0] >= N or nextCoord[1] < 0 or nextCoord[1] >= M:
+                        continue
+                    # * find next node
+                    if gameBoard[nextCoord[0]][nextCoord[1]] == '*':
+                        nextNode = Node((nextCoord[0],nextCoord[1]), None)
+                        snake.addNode(nextNode)
+                        currentDirection = SumOfDir - direc
+                        currentCoord = nextNode.coord  
+                        isTail = False
+                        break
+            
+            if isTail:
+                break
+
+    # * Build Snake, end =======================================================
     
 
 
-        
+    # snake.moveF()
+    # snake.moveF()
+    # snake.moveF()
+    # snake.turnR()
+    # snake.turnR()
+    # snake.turnL()
 
+    for com in commands:
+        if com == 'F':
+            snake.moveF()
+        elif com == 'L':
+            snake.turnL()
+        elif com == 'R':
+            snake.turnR()
     
 
+    return gameBoard
 
 
 
 
+# g1 = [['.', '.', '*', '>', '.'],
+#       ['.', '*', '*', '.', '.'],
+#       ['.', '.', '.', '.', '.']]
+# c1 = 'FRFFRFFRFLFF'
+# r1 = snakeGame(g1, c1)
+# print(r1)
 
-g1 = [['.', '.', '*', '>', '.'],
-      ['.', '*', '*', '.', '.'],
-      ['.', '.', '.', '.', '.']]
-c1 = 'FRFFRFFRFLFF'
+
+g1 = [[".",".",".","."], 
+      [".",".","<","*"], 
+      [".",".",".","*"]]
+c1 = 'FFFFFRFFRRLLF'
 r1 = snakeGame(g1, c1)
 print(r1)
 
