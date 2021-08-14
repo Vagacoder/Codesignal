@@ -182,31 +182,37 @@ class Piece():
     def height(self):
         return len(self.piece)
 
+    # * key method: rotate the piece
     def rotate(self, times = 1):
         for i in range(times):
             self.piece = [row[::-1] for row in zip(*self.piece)]
 
-    # Debugging purposes
+    # * for debug
     def __str__(self):
        return '\n'.join(''.join(line) for line in self.piece)
 
+
+# * class of board
 class Board():
     def __init__(self):
-        self.max_height = 20
-        self.max_width = 10
-        self.board = [['.' for _ in range(self.max_width)] for __ in range(self.max_height)]
+        self.MAX_HEIGHT = 20
+        self.MAX_WIDTH = 10
+        self.board = [['.' for _ in range(self.MAX_WIDTH)] for __ in range(self.MAX_HEIGHT)]
 
+    # * find lines which is full of '#', return its row index
     def completed_line(self):
         for i, line in enumerate(self.board):
             if line.count('.') == 0:
                 yield i
 
+    # * remove a line, and insert empty line at the top
     def clear_line(self, index):
         del self.board[index]
         self.board.insert(0, ['.' for _ in range(10)])
 
+    # * find the row index when a piece dropped at offset
     def drop(self, piece, offset):
-        last_level = self.max_height - piece.height + 1
+        last_level = self.MAX_HEIGHT - piece.height + 1 # ? why need + 1 for last_level?
         for level in range(last_level):
             for i in range(piece.height):
                 for j in range(piece.width):                    
@@ -214,6 +220,7 @@ class Board():
                         return level - 1
         return last_level - 1
 
+    # * place a piece at pos(level, offset)
     def place_piece(self, piece, pos):
         level, offset = pos
         for i in range(piece.height):
@@ -221,21 +228,28 @@ class Board():
                 if piece.piece[i][j] == "#":
                     self.board[level+i][offset+j] = piece.piece[i][j]
 
-    # Debugging purposes
+    # * for debug
     def __str__(self):
        return '\n'.join(''.join(line) for line in self.board)
 
+
+# * find the best position for single piece on the board
 def find_best_position(board: Board, piece: Piece) -> list:
     result = []
     for rotation in range(4):
-        for offset in range(board.max_width - piece.width + 1):        
+        for offset in range(board.MAX_WIDTH - piece.width + 1):        
+            # * find the row index after dropping
             level = board.drop(piece, offset)
+            # * count block '#' number in board
             blocks = sum([b.count('#') for b in board.board[level:level + piece.height]])
             result.append([blocks, rotation, offset, level])
         piece.rotate()
 
+    # * The total number of blocks in the rows this piece will occupy after falling down is maximized;
     result = list(filter(lambda x: x[0] == max(result, key = lambda x: x[0])[0], result))
+    # * Among all positions with that value maximized, this position requires the least number of rotations;
     result = list(filter(lambda x: x[1] == min(result, key = lambda x: x[1])[1], result))
+    # * Among all positions that require the minimum number of rotations, this one is the leftmost one
     result = list(filter(lambda x: x[2] == min(result, key = lambda x: x[2])[2], result))[0]
     return result
 
